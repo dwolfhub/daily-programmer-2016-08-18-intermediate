@@ -1,0 +1,72 @@
+#!/usr/bin/python
+
+import getopt
+import sys
+
+
+def main(argv):
+    input_file = ''
+    output_file = ''
+    max_length = 80
+
+    # gather command line options
+    try:
+        opts, args = getopt.getopt(
+            argv,
+            "hi:o:l:",
+            ["ifile=", "ofile=", "linelength="]
+        )
+    except getopt.GetoptError:
+        print 'run.py -i <inputfile> -o <outputfile> -l <linelength>'
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == '-h':
+            print 'run.py -i <inputfile> -o <outputfile> -l <linelength>'
+            sys.exit()
+        elif opt in ("-l", "--linelength"):
+            max_length = int(arg)
+        elif opt in ("-i", "--ifile"):
+            input_file = arg
+        elif opt in ("-o", "--ofile"):
+            output_file = arg
+
+    with open(input_file, 'r') as input_f:
+        with open(output_file, 'w') as output_f:
+
+            output_line = ''
+            line_len = -1
+
+            # only holding one line of the input file in memory
+            for line in input_f:
+                if not line:
+                    continue
+
+                line = line.strip()
+
+                # throw this line in a list and iterate over it
+                word_container = line.split(' ')
+                while word_container:
+                    word = word_container.pop(0)
+                    if not word:
+                        continue
+
+                    word_len = len(word)
+
+                    line_len += word_len + 1
+                    if line_len <= max_length:
+                        # add word to this line
+                        if output_line:
+                            output_line = '{} {}'.format(output_line, word)
+                        else:
+                            output_line = word
+                    else:
+                        # write that line and reset vars
+                        output_f.write("{}\n".format(output_line))
+                        output_line = ''
+
+                        line_len = word_len
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
