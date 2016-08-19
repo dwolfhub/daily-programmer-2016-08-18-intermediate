@@ -45,9 +45,7 @@ def main(argv):
                 line = line.strip()
 
                 # throw this line in a list and iterate over it
-                word_container = line.split(' ')
-                while word_container:
-                    word = word_container.pop(0)
+                for word in line.split(' '):
                     if not word:
                         continue
 
@@ -57,12 +55,12 @@ def main(argv):
                     if line_len <= max_length:
                         # add word to this line
                         if output_line:
-                            output_line = '{} {}'.format(output_line, word)
+                            output_line = output_line + ' ' + word
                         else:
                             output_line = word
                     else:
                         # write that line and reset vars
-                        output_f.write("{}\n".format(output_line))
+                        output_f.write(output_line + "\n")
                         output_line = ''
 
                         line_len = word_len
